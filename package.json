@@ -9,10 +9,11 @@
     "express": "3.0.6",
     "ejs": "*",
     "less-middleware": "*",
-    "mongodb":"*",
-    "mongojs":"*",
-    "socket.io":"*",
-    "gravatar":"*",
-    "underscore":"*"
+    "mongodb": "*",
+    "mongojs": "*",
+    "socket.io": "*",
+    "gravatar": "*",
+    "underscore": "*",
+    "jquery": "~1.8.3"
   }
 }
