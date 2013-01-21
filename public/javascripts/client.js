@@ -24,6 +24,9 @@ Ui = function() {
       eval(toCall);
     });
 
+    $('#hardStatus').change(function() {
+      $('.statusForm').trigger('submit');
+    });
 
     $('#user').change(function(event){
       ui.setControls();
