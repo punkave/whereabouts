@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="./javascripts/underscore.js"> </script>
+    <script type="text/javascript" src="./javascripts/jquery.js"> </script>
+    <script type="text/javascript" src="./javascripts/client.js"> </script>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+
+    <script type="text/template" class="_template" id="punkNormalView">
+      <div class="show">
+        <h2 class="name">{{ name }} <span class="status">{{ hardStatus }}</span></h2>
+        <br/>
+        <div class="description">{{ softStatus }}</div>
+      </div>
+    </script>
+
+
+
+    <div class="controls">
+      <div class="user-select">
+        logged in as:
+        <select id="user">
+        <% punks.forEach(function(p){ %>
+          <option value="<%= p.name %>"><%= p.name %></option>
+        <% }) %>
+        </select>
+      </div>
+
+      <form class="statusForm" data-function="ui.updatePunk()">
+        <select id="hardStatus">
+          <% statuses.forEach(function(s){ %>
+            <option value="<%= s %>"><%= s %></option>
+          <% }) %>
+        </select>
+        <input type="text" id="softStatus" value="{{softStatus}}" />
+        <input type="submit" id="statusSubmit" />
+      </form>
+    </div>
+
+    <ul class="punks">
+      <% punks.forEach(function(p){ %>
+        <li class="punk <%= p.hardStatus %>" id="<%= p.name %>" data-name="<%= p.name %>">
+          <div class="thumb <%= p.team %>">
+            <img src="<%= p.imgUrl %>" />
+          </div>
+
+          <div class="info">
+            <div class="show">
+              <h2 class="name"><%= p.name %> <span class="status"><%= p.hardStatus %></span></h2>
+              <br/>
+              
+              <div class="description"><%= p.softStatus %></div>
+            </div>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  </body>
+</html>
+

@@ -1,0 +1,202 @@
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+* { margin: 0; padding: 0; font-weight: normal; } // Safari seems to ignore a lot of the reset style sheet and I am not sure why.
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-weight: inherit; font-style: inherit; font-size: 100%; font-family: inherit; vertical-align: baseline; }
+:focus { outline: 0; } // remember to define focus styles!
+ins { text-decoration: none; } // remember to highlight inserts somehow!
+del { text-decoration: line-through; }
+table { border-collapse: separate; border-spacing: 0; } // tables still need 'cellspacing="0"' in the markup
+blockquote:before, blockquote:after, q:before, q:after { content: ""; }
+blockquote, q { quotes: "" ""; }
+
+body {background-color:#ECECE7; font-family: "Georgia"; color: #333;}
+
+a {
+  color: #00B7FF;
+}
+.controls
+{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  -webkit-box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+  
+  .user-select
+  {
+    float:left;
+    width: 100%;
+    background: #333;
+    padding: 7px 10px;
+    color: #fff;
+    font-size: 12px;
+    text-align: right;
+
+  }
+
+  .statusForm
+  {
+    float: left;
+    width: 100%;
+    background: #174C5B;
+    padding: 10px;
+    
+    select {width: 100%;}
+    input
+    {
+      width: 100%;  
+      padding: 5px 10px;
+      border: 0;
+      -webkit-border-radius: 5px;
+      
+      &#statusSubmit
+      {
+        width: 40px;
+      }
+    }
+
+
+  }
+}
+
+
+
+.punks
+{
+  float: left;
+  list-style: none;
+  width: 350px;
+  margin: 20px 0;
+  margin-top: 110px;
+  .punk
+  {
+    float: left;
+    clear: both;
+    width: 100%;
+    width: 350px;
+    max-height: 120px;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+    border: 1px solid #eee;
+    
+    -webkit-box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    -webkit-border-radius: 10px;
+    margin: 4px 20px;
+    
+    .name
+    {
+      margin-top: 15px;
+      text-transform: capitalize;
+      font-weight: bold;
+      
+      .status {font-weight: normal; font-size: 14px;}
+    }
+    
+    .thumb
+    {
+      float: left;
+      border: 4px solid #fff;
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      overflow: hidden;
+      margin: 10px;
+      margin-right: 15px;
+      
+      img {
+        width: 100%;
+        height: auto;
+      }
+
+      &.default {border-color: fadeout(orange, 20%);}
+
+      &.red
+      {
+        border-color: red;
+      }
+
+      -webkit-box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .info
+    {
+      float: left;
+      width: 70%;
+      
+      .name
+      {
+        font-weight: bold;
+        float: left;
+        width: auto;
+      }
+
+      .description
+      {
+        float: left;
+        clear: both;
+        margin-top: 2px;
+        font-style: italic;
+
+        .drawer
+        {
+          height: 0px;
+          overflow: hidden;
+          -webkit-transition: height 0.2s ease;
+          
+          &.open
+          {
+            height: 30px;
+          }
+        }
+      } 
+    }
+  }
+}
+
+.edit-info
+{
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  background: blue;
+  line-height: 80px;
+  text-align: center;
+  width: 80px;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 2px -2px rgba(0,0,0,0.5);
+  -webkit-border-radius: 40px;
+
+  &:active
+  {
+    -webkit-box-shadow: 0px 2px 2px rgba(0,0,0,0.0);
+  }
+}
+
+.ui
+{
+  &.btn
+  {
+    display: inline-block;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    background: #ccc;
+    -webkit-box-shadow: 0px 2px 2px rgba(0,0,0,0.5);
+    
+    &:hover
+    {
+      color: #666;
+    }
+
+    &:active
+    {
+      -webkit-box-shadow: 0px 2px 2px rgba(0,0,0,0.0);
+    }
+  }
+}

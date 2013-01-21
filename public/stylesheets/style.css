@@ -1,0 +1,251 @@
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+}
+:focus {
+  outline: 0;
+}
+ins {
+  text-decoration: none;
+}
+del {
+  text-decoration: line-through;
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+}
+blockquote,
+q {
+  quotes: "" "";
+}
+body {
+  background-color: #ECECE7;
+  font-family: "Georgia";
+  color: #333;
+}
+a {
+  color: #00B7FF;
+}
+.controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+.controls .user-select {
+  float: left;
+  width: 100%;
+  background: #333;
+  padding: 7px 10px;
+  color: #fff;
+  font-size: 12px;
+  text-align: right;
+}
+.controls .statusForm {
+  float: left;
+  width: 100%;
+  background: #174C5B;
+  padding: 10px;
+}
+.controls .statusForm select {
+  width: 100%;
+}
+.controls .statusForm input {
+  width: 100%;
+  padding: 5px 10px;
+  border: 0;
+  -webkit-border-radius: 5px;
+}
+.controls .statusForm input#statusSubmit {
+  width: 40px;
+}
+.punks {
+  float: left;
+  list-style: none;
+  width: 350px;
+  margin: 20px 0;
+  margin-top: 110px;
+}
+.punks .punk {
+  float: left;
+  clear: both;
+  width: 100%;
+  width: 350px;
+  max-height: 120px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  border: 1px solid #eee;
+  -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 10px;
+  margin: 4px 20px;
+}
+.punks .punk .name {
+  margin-top: 15px;
+  text-transform: capitalize;
+  font-weight: bold;
+}
+.punks .punk .name .status {
+  font-weight: normal;
+  font-size: 14px;
+}
+.punks .punk .thumb {
+  float: left;
+  border: 4px solid #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  overflow: hidden;
+  margin: 10px;
+  margin-right: 15px;
+  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+.punks .punk .thumb img {
+  width: 100%;
+  height: auto;
+}
+.punks .punk .thumb.default {
+  border-color: rgba(255, 165, 0, 0.8);
+}
+.punks .punk .thumb.red {
+  border-color: red;
+}
+.punks .punk .info {
+  float: left;
+  width: 70%;
+}
+.punks .punk .info .name {
+  font-weight: bold;
+  float: left;
+  width: auto;
+}
+.punks .punk .info .description {
+  float: left;
+  clear: both;
+  margin-top: 2px;
+  font-style: italic;
+}
+.punks .punk .info .description .drawer {
+  height: 0px;
+  overflow: hidden;
+  -webkit-transition: height 0.2s ease;
+}
+.punks .punk .info .description .drawer.open {
+  height: 30px;
+}
+.edit-info {
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  background: blue;
+  line-height: 80px;
+  text-align: center;
+  width: 80px;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 2px -2px rgba(0, 0, 0, 0.5);
+  -webkit-border-radius: 40px;
+}
+.edit-info:active {
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0);
+}
+.ui.btn {
+  display: inline-block;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  background: #ccc;
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.5);
+}
+.ui.btn:hover {
+  color: #666;
+}
+.ui.btn:active {
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0);
+}
