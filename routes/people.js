@@ -33,7 +33,7 @@ exports.personDefaults = function(person) {
   person.team = 'default';
   person.hardStatus = 'Available';
   person.softStatus = 'Hello World!';
-  person.imgUrl = gravatar.url( person.email, {s: '60', r: 'pg', d: '404'});
+  
 };
 
 exports.findPunk = function(name, callback) {
@@ -59,6 +59,7 @@ exports.createPunk = function(name, callback) {
   var person = dbConfig.schema.punk;
   person.name = name;
   person.email = name + '@' + dbConfig.domain;
+  person.imgUrl = gravatar.url( person.email, {s: '60', r: 'pg', d: 'mm'}, true);
   people.personDefaults(person);
 
   console.log("CALLBACK");
