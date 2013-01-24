@@ -1,5 +1,5 @@
 //your domain name used for authentication
-exports.domain = marxbros.net
+exports.domain = "marxbros.net"
 
 //list of possible statuses
 exports.hardStatuses = ['Available', 'In a Meeting', 'Unavailable', 'At Lunch']
