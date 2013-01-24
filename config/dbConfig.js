@@ -9,9 +9,8 @@ exports.collections = ["punks"];
 exports.schema = {
   punk : {
     name: 'default',
-    fullName: 'John Doe',
+    displayName: 'John Doe',
     email: 'test@example.com',
-    imgUrl: '/images/default-portrait.png',
     team: 'default',
     hardStatus: 'Available',
     softStatus: 'Hello World!'
@@ -21,4 +20,6 @@ exports.schema = {
 
 exports.hardStatuses = settings.hardStatuses;
 exports.people = settings.people;
-exports.teams = settings.teams
+exports.teams = settings.teams;
+exports.domain = settings.domain;
+
