@@ -2,6 +2,9 @@
 <html>
   <head>
     <title><%= title %></title>
+    <script type="text/javascript">
+    var me = <%- JSON.stringify(me) %>;
+    </script>
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="./javascripts/underscore.js"> </script>
     <script type="text/javascript" src="./javascripts/jquery.js"> </script>
@@ -22,12 +25,7 @@
 
     <div class="controls">
       <div class="user-select">
-        logged in as:
-        <select id="user">
-        <% punks.forEach(function(p){ %>
-          <option value="<%= p.name %>"><%= p.name %></option>
-        <% }) %>
-        </select>
+        logged in as <%= me.name %> <a href="/auth/logout">log out</a>
       </div>
 
       <form class="statusForm" data-function="ui.updatePunk()">

@@ -34,18 +34,16 @@ Ui = function() {
   }
 
   this.setControls = function() {
-    var currentPerson = ui.getPunk( $('#user option:selected').val() );
-    $('#softStatus').val(currentPerson.softStatus);
-    $('#hardStatus').val(currentPerson.hardStatus)
-    $('#softStatus').select();
-
-
+    console.log(me.name);
+    var currentPerson = ui.getPunk(me.name, function(err, currentPerson) {
+      $('#softStatus').val(currentPerson.softStatus);
+      $('#hardStatus').val(currentPerson.hardStatus);
+      $('#softStatus').select();
+    });
   }
 
   this.updatePunk = function() {
-    // name will eventually be a value determined by auth.
-    // right now, we're just picking it from a dropdown as a proof of concept
-    var name = $('#user option:selected').val()
+    var name = me.name;
 
     var post = {
       punk: {
@@ -59,10 +57,10 @@ Ui = function() {
 
 
   this.disableEdit = function(name) {
-    $('.punk#'+name+' .info').html(
-      normalView(ui.getPunk(name))
-    );
-  }
+    ui.getPunk(name, function(err, user) {
+      $('.punk#' + name + ' .info').html(normalView(user));
+    });
+  };
 
   this.post = function(name, post) {
     $.ajax({
@@ -73,18 +71,20 @@ Ui = function() {
     });  
   }
 
-  this.getPunk = function(name) {
+  this.getPunk = function(name, callback) {
     var punk;
     $.ajax({
       url: '/punks/'+name,
       type: 'GET',
       async: false,
       success: function(data) {
-        punk = data[0];
+        punk = data;
+        return callback(null, punk);
+      },
+      failure: function() {
+        return callback("Error");
       }
     });
-
-    return punk;
   }
 }
 
