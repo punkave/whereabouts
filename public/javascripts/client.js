@@ -10,8 +10,15 @@ Ui = function() {
   //pull in the edit/normal view templates from the index file"
   var normalView = _.template($('._template#punkNormalView').html());
 
+  var socket;
 
   this.setup = function() {
+    // Initialize socket connection and authenticate
+    socket = io.connect('http://localhost');
+    console.log('created socket');
+    socket.emit('auth', { socketKey: socketKey });
+    console.log('sent message with key ' + socketKey);
+
     // set up listeners for UI events
     $('.btn').click(function(event){
       var toCall = $(this).attr('data-function');
@@ -31,10 +38,37 @@ Ui = function() {
     $('#user').change(function(event){
       ui.setControls();
     });
+
+    $('#chat').keyup(function(e) {
+      // Enter key is send
+      if (e.which === 13) {
+        socket.emit('chat', { what: $('#chat').val() });
+        $('#chat').val('');
+        $('#chat').focus();
+        return false;
+      }
+      return true;
+    });
+
+    socket.on('update', function (data) {
+      ui.refreshPunk(data.name);
+    });
+
+    socket.on('chat', function (chat) {
+      // Ignore chats we already have in our display. This can happen in
+      // race conditions and ignoring it here simplifies the database
+      console.log(chat);
+      if ($('#' + chat._id).length) {
+        return;
+      }
+      var $chat = $('<li></li>');
+      $chat.attr('id', chat._id);
+      $chat.text(chat.who + ': ' + chat.what);
+      $('#chats').append($chat);
+    });
   }
 
   this.setControls = function() {
-    console.log(me.name);
     var currentPerson = ui.getPunk(me.name, function(err, currentPerson) {
       $('#softStatus').val(currentPerson.softStatus);
       $('#hardStatus').val(currentPerson.hardStatus);
@@ -56,7 +90,7 @@ Ui = function() {
   }
 
 
-  this.disableEdit = function(name) {
+  this.refreshPunk = function(name) {
     ui.getPunk(name, function(err, user) {
       $('.punk#' + name + ' .info').html(normalView(user));
     });
@@ -92,10 +126,4 @@ $(document).ready(function() {
   window.ui = new Ui();
   ui.setup();
   ui.setControls();
-
-  var socket = io.connect('http://localhost');
-
-  socket.on('update', function (data) {
-    ui.disableEdit(data.name);
-  });
 });

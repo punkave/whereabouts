@@ -4,6 +4,7 @@
     <title><%= title %></title>
     <script type="text/javascript">
     var me = <%- JSON.stringify(me) %>;
+    var socketKey = <%- JSON.stringify(socketKey) %>;
     </script>
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="./javascripts/underscore.js"> </script>
@@ -54,6 +55,16 @@
               <div class="description"><%= p.softStatus %></div>
             </div>
           </div>
+        </li>
+      <% }) %>
+    </ul>
+
+    <textarea id="chat">
+    </textarea>
+    <ul id="chats">
+      <% chats.forEach(function(chat) { %>
+        <li class="chat" id="<%= chat._id %>">
+          <%= chat.who %>: <%= chat.what %>
         </li>
       <% }) %>
     </ul>

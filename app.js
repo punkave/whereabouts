@@ -3,16 +3,28 @@ var express = require('express')
   , path = require('path')
   , gravatar = require('gravatar')
   , passport = require('passport')
-  , minimatch = require('minimatch');
+  , minimatch = require('minimatch')
+  , crypto = require('crypto')
+  , _ = require('underscore');
 
 var settings = require('./config.js');
 
 // Global db object so we can have more than one model .js file sharing the db
-var db = require("mongojs").connect(settings.db.url, settings.db.collections);
+
+// The list of collection names is not really configuration file stuff as your app will
+// not work without those we expect, so hardcode those here. -Tom
+var db = require("mongojs").connect(settings.db.url, ['punks', 'chats']);
 
 var people = require('./model/people')(settings.db, db);
+var chats = require('./model/chats')(settings.db, db);
 
 var app = express();
+
+// Part of user authentication for socket.io stuff
+var namesBySocketKey = {};
+
+// Useful for private messaging
+var socketsByName = {};
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
@@ -36,11 +48,28 @@ app.configure('development', function(){
 
 //setting up the routes:
 
-app.get('/', function(req, res) {
-  people.find(function(err, docs) {
-    res.render('index', { title: 'Punks', me: req.user, punks: docs, statuses: settings.hardStatuses });
-  });
-});
+// Main page, with initial load of punks and recent chats. Use
+// middleware functions to pull all that data gracefully without 
+// deeply nested callbacks. 
+
+app.get('/', 
+  function(req, res, next) {
+    people.find(function(err, docs) {
+      req.punks = docs;
+      next();
+    });
+  },
+  function(req, res, next) {
+    chats.find(function(err, docs) {
+      req.chats = docs;
+      next();
+    });
+  },
+  function(req, res) {
+    res.render('index', { title: 'Punks', me: req.user, socketKey: req.session.socketKey, punks: req.punks, statuses: settings.hardStatuses, chats: req.chats 
+    });
+  }
+);
 
 app.get('/punks', function(req, res) {
   people.find(function(err, docs) {
@@ -88,7 +117,7 @@ app.post('/punks/update/:name', function(req, res) {
   }
   people.update(req.params.name, req.body.punk, function(err, name, data) {
     data.name = name;
-    app.socket.emit('update', data);
+    emitToAll('update', data);
   });
 });
 
@@ -100,10 +129,43 @@ server.listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
 
-// turn on the socket...
+// Listen for connections
 io.sockets.on('connection', function (socket) {
-  app.socket = socket;
+  console.log('socket connection');
+  socket.on('auth', function(data) {
+    var socketKey = data.socketKey;
+    console.log('auth message');
+    if (namesBySocketKey[socketKey]) {
+      console.log('key is good');
+      // This user is now authenticated for this socket
+      socket.name = namesBySocketKey[socketKey];
+      // All sockets associated with an authenticated user
+      socketsByName[socket.name] = socket;
+      // Now we can accept other incoming messages
+      socket.on('chat', function(chat) {
+        // Save the chat in the db, then rebroadcast it to logged-in users.
+        chats.create(socket.name, chat.room, chat.what, function(err, chat) {
+          emitToAll('chat', chat);
+        });
+      });
+    } else {
+      console.log('key is not good');
+      // I don't know you buddy!
+      socket.disconnect();
+    }
+  });
 });
+
+// Send to every authenticated socket.
+//
+// "Why don't you use io.sockets.emit to broadcast?" Because that would
+// send stuff to sockets that haven't authenticated yet. -Tom
+
+function emitToAll(message, data) {
+  _.each(socketsByName, function(socket) {
+      socket.emit(message, data);
+  });
+}
 
 // Set up user authentication
 function configurePassport()
@@ -173,15 +235,31 @@ function configurePassport()
     console.log('finding punk');
     people.findOne(req.user.name, function(err, person) {
       if (person) {
-        return next();
+        return after();
       }
       console.log('calling create');
       people.create(req.user.name, function(err, person) {
         console.log('callback of create');
         if (!err) {
-          return next();
+          return after();
+        } else {
+          throw err;
         }
       });
+      // Stash an identifier in the session that we will
+      // accept later to associate this user with a socket.
+      // This is necessary because socket.io can't always
+      // see session cookies (read up on what happens when
+      // the flash transport is used). The workarounds are
+      // all pretty grim, I like this better
+      function after() {
+        if (!req.session.socketKey) {
+          req.session.socketKey = makeId();
+          console.log('established socket key ' + req.session.socketKey);
+          namesBySocketKey[req.session.socketKey] = req.user.name;
+        }
+        return next();
+      }
     });
   });
 
@@ -208,7 +286,20 @@ function configurePassport()
   app.get('/auth/logout', function(req, res)
   {
     console.log('logging out');
+    if (req.user) {
+      delete socketsByName[req.user.name];
+      delete namesBySocketKey[req.session.socketKey];
+      delete req.session.socketKey;
+    }
     req.logOut();
     res.render('loggedOut', {  });
   });
 }
+
+// Make a really really random identifier
+
+function makeId() {
+  var buf = crypto.randomBytes(16);
+  return buf.toString('hex');
+}
+
