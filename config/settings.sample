@@ -1,27 +1,17 @@
-exports.hardStatuses = ['Available', 'In a Meeting', 'Unavailable', 'At Lunch']
-
-//list of people in your organization
-exports.people = [
-  {
-    name: 'chico',
-    displayName: 'Chico Marx',
-    email: 'chico@marxbros.net'
-  },
-  {
-    name: 'groucho',
-    displayName: 'Groucho Marx',
-    email: 'groucho@marxbros.net'
-  },
-  {
-    name: 'harpo',
-    displayName: 'Harpo Marx',
-    email: 'harpo@marxbros.net'
+exports = {
+  hardStatuses: ['Available', 'In a Meeting', 'Unavailable', 'At Lunch'],
+  /* list of teams and the people on them in your organization
+  ------ YOU MUST HAVE AT LEAST ONE TEAM (is that true? Are teams that important
+  that you can't just get started with the app?) */
+  teams: {
+    marxBros: [ 'chico', 'harpo', 'groucho', 'zeppo' ]
   }
-]
+  domain: 'example.com',
+  db: {
+    //database name
+    databaseUrl: "whereabouts",
+    // collections name
+    collections: ["punks"]
+  }
+};
 
-/* list of teams and the people on them in your organization
------- YOU MUST HAVE AT LEAST ONE TEAM */
-
-exports.teams = {
-  marxBros: ['chico','groucho','harpo']
-}

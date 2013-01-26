@@ -1,11 +1,16 @@
 var express = require('express')
   , routes = require('./routes')
-  , people = require('./routes/people')
   , http = require('http')
   , path = require('path')
   , gravatar = require('gravatar')
   , passport = require('passport')
   , minimatch = require('minimatch');
+
+var settings = require('./config/settings.js');
+
+var db = require("mongojs").connect(settings.db.url, settings.db.collections);
+
+var people = require('./model/people')(settings.db, db);
 
 var app = express();
 
@@ -14,15 +19,6 @@ var app = express();
 // config file. Some refactoring is needed around that.
 // validUser can be determined from dbConfig.domain but
 // we don't see that in this file right now
-
-var authSettings = {
-  validUser: '*@punkave.com',
-
-  google: {
-    returnURL: 'http://localhost:3000/auth/google/callback',
-    realm: 'http://localhost:3000/'
-  }
-};
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
@@ -47,21 +43,14 @@ app.configure('development', function(){
 //setting up the routes:
 app.get('/', routes.index);
 
-/*
-TO DO!!!! : In some kind of config file, define an array of 
-possible statuses and possible teams. use these to populate the
-index.js file. it will make less markup and the app more flexible
-*/
-
-//TO DO!!! : Add email column to db. Connect gravitar so it pulls in avatars based on email.
-app.get('/punks', function(req, res){
-  people.list(req, res)
+app.get('/punks', function(req, res) {
+  db.punks.find(function(err, docs) {
+    res.send(docs);
+  });
 });
 
-app.get('/punks/statuses', function(req, res){
-  people.getStatuses(req, res, function(statuses) {
-    res.send(statuses);
-  });
+app.get('/punks/statuses', function(req, res) {
+  res.send(dbConfig.hardStatuses);
 });
 
 // gmail says who the valid punks are. Log in and 
@@ -69,11 +58,13 @@ app.get('/punks/statuses', function(req, res){
 
 // app.get('/punks/generate', function(req, res) {
 //   console.log('attempting to generate');
-//   people.generate(req, res);
+//   people.generate(function(err) {
+//      res.send('Hooray');
+//   });
 // });
 
 app.get('/punks/:name', function(req, res){
-  people.findPunk(req.params.name, function(err, punk) {
+  people.find(req.params.name, function(err, punk) {
     res.send(punk);
   })
 });
@@ -96,7 +87,7 @@ app.post('/punks/update/:name', function(req, res) {
     res.statusCode = 403;
     return res.send('That\'s not you!');
   }
-  people.update(req.params.name, req.body.punk, res, function(err, name, data){
+  people.update(req.params.name, req.body.punk, function(err, name, data) {
     data.name = name;
     app.socket.emit('update', data);
   });
@@ -118,9 +109,10 @@ io.sockets.on('connection', function (socket) {
 // Set up user authentication
 function configurePassport()
 {
+  var auth = settings.auth;
   var GoogleStrategy = require('passport-google').Strategy;
   passport.use(new GoogleStrategy(
-    authSettings.google,
+    auth.google,
     function(identifier, profile, done) {
       // Create a user object from the most useful bits of their profile.
       // With google their email address is their unique id.
@@ -172,7 +164,7 @@ function configurePassport()
     if (!req.user) {
       return res.redirect('/auth/google');
     }
-    if (!minimatch(req.user.email, authSettings.validUser)) {
+    if (!minimatch(req.user.email, auth.validUser)) {
       res.statusCode = 403;
       return res.send('That gmail address is not in the correct domain.');
     }
@@ -180,13 +172,13 @@ function configurePassport()
     // If not get their defaults set up so they
     // become visible
     console.log('finding punk');
-    people.findPunk(req.user.name, function(err, person) {
+    people.find(req.user.name, function(err, person) {
       if (person) {
         return next();
       }
-      console.log('calling createPunk');
-      people.createPunk(req.user.name, function(err, person) {
-        console.log('callback of createPunk');
+      console.log('calling create');
+      people.create(req.user.name, function(err, person) {
+        console.log('callback of create');
         if (!err) {
           return next();
         }
