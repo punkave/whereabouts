@@ -42,13 +42,13 @@ app.configure('development', function(){
 //setting up the routes:
 
 app.get('/', function(req, res) {
-  db.punks.find(function(err, docs) {
+  people.find(function(err, docs) {
     res.render('index', { title: 'Punks', me: req.user, punks: docs, statuses: settings.hardStatuses });
   });
 });
 
 app.get('/punks', function(req, res) {
-  db.punks.find(function(err, docs) {
+  people.find(function(err, docs) {
     res.send(docs);
   });
 });
@@ -68,7 +68,7 @@ app.get('/punks/statuses', function(req, res) {
 // });
 
 app.get('/punks/:name', function(req, res){
-  people.find(req.params.name, function(err, punk) {
+  people.findOne(req.params.name, function(err, punk) {
     res.send(punk);
   })
 });
@@ -176,7 +176,7 @@ function configurePassport()
     // If not get their defaults set up so they
     // become visible
     console.log('finding punk');
-    people.find(req.user.name, function(err, person) {
+    people.findOne(req.user.name, function(err, person) {
       if (person) {
         return next();
       }

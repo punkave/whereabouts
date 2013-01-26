@@ -37,7 +37,13 @@ function People(options, db) {
     person.imgUrl = gravatar.url( person.email, {s: '60', r: 'pg', d: '404'});
   };
 
-  self.find = function(name, callback) {
+  // Find ALL the punks
+  self.find = function(callback) {
+    return db.punks.find(callback);
+  }
+
+  // Find one punk by username
+  self.findOne = function(name, callback) {
     db.punks.findOne({name:name}, function(err, doc) {
       console.log('did a find');
       if( err ) {
