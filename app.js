@@ -1,5 +1,4 @@
 var express = require('express')
-  , routes = require('./routes')
   , http = require('http')
   , path = require('path')
   , gravatar = require('gravatar')
@@ -41,7 +40,12 @@ app.configure('development', function(){
 });
 
 //setting up the routes:
-app.get('/', routes.index);
+
+app.get('/', function(req, res) {
+  db.punks.find(function(err, docs) {
+    res.render('index', { title: 'Punks', me: req.user, punks: docs, statuses: settings.hardStatuses });
+  });
+});
 
 app.get('/punks', function(req, res) {
   db.punks.find(function(err, docs) {
@@ -50,7 +54,7 @@ app.get('/punks', function(req, res) {
 });
 
 app.get('/punks/statuses', function(req, res) {
-  res.send(dbConfig.hardStatuses);
+  res.send(settings.hardStatuses);
 });
 
 // gmail says who the valid punks are. Log in and 
