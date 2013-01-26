@@ -5,19 +5,14 @@ var express = require('express')
   , passport = require('passport')
   , minimatch = require('minimatch');
 
-var settings = require('./config/settings.js');
+var settings = require('./config.js');
 
+// Global db object so we can have more than one model .js file sharing the db
 var db = require("mongojs").connect(settings.db.url, settings.db.collections);
 
 var people = require('./model/people')(settings.db, db);
 
 var app = express();
-
-// TODO: this needs to be part of a global config file,
-// but right now only the people module can see a 
-// config file. Some refactoring is needed around that.
-// validUser can be determined from dbConfig.domain but
-// we don't see that in this file right now
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
