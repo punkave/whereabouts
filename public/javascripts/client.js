@@ -14,7 +14,7 @@ Ui = function() {
 
   this.setup = function() {
     // Initialize socket connection and authenticate
-    socket = io.connect('http://localhost');
+    socket = io.connect(window.location.protocol + '//' + window.location.host);
     console.log('created socket');
     socket.emit('auth', { socketKey: socketKey });
     console.log('sent message with key ' + socketKey);
@@ -39,32 +39,8 @@ Ui = function() {
       ui.setControls();
     });
 
-    $('#chat').keyup(function(e) {
-      // Enter key is send
-      if (e.which === 13) {
-        socket.emit('chat', { what: $('#chat').val() });
-        $('#chat').val('');
-        $('#chat').focus();
-        return false;
-      }
-      return true;
-    });
-
     socket.on('update', function (data) {
       ui.refreshPunk(data.name);
-    });
-
-    socket.on('chat', function (chat) {
-      // Ignore chats we already have in our display. This can happen in
-      // race conditions and ignoring it here simplifies the database
-      console.log(chat);
-      if ($('#' + chat._id).length) {
-        return;
-      }
-      var $chat = $('<li></li>');
-      $chat.attr('id', chat._id);
-      $chat.text(chat.who + ': ' + chat.what);
-      $('#chats').append($chat);
     });
   }
 

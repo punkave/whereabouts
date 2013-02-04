@@ -7,16 +7,15 @@ var express = require('express')
   , crypto = require('crypto')
   , _ = require('underscore');
 
-var settings = require('./config.js');
+var settings = require('./config/settings.js');
 
 // Global db object so we can have more than one model .js file sharing the db
 
 // The list of collection names is not really configuration file stuff as your app will
 // not work without those we expect, so hardcode those here. -Tom
-var db = require("mongojs").connect(settings.db.url, ['punks', 'chats']);
+var db = require("mongojs").connect(settings.db.url, ['punks']);
 
 var people = require('./model/people')(settings.db, db);
-var chats = require('./model/chats')(settings.db, db);
 
 var app = express();
 
@@ -27,7 +26,7 @@ var namesBySocketKey = {};
 var socketsByName = {};
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', settings.port);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -48,7 +47,7 @@ app.configure('development', function(){
 
 //setting up the routes:
 
-// Main page, with initial load of punks and recent chats. Use
+// Main page, with initial load of punks. Use
 // middleware functions to pull all that data gracefully without 
 // deeply nested callbacks. 
 
@@ -59,14 +58,8 @@ app.get('/',
       next();
     });
   },
-  function(req, res, next) {
-    chats.find(function(err, docs) {
-      req.chats = docs;
-      next();
-    });
-  },
   function(req, res) {
-    res.render('index', { title: 'Punks', me: req.user, socketKey: req.session.socketKey, punks: req.punks, statuses: settings.hardStatuses, chats: req.chats 
+    res.render('index', { title: 'Punks', me: req.user, socketKey: req.session.socketKey, punks: req.punks, statuses: settings.hardStatuses 
     });
   }
 );
@@ -104,7 +97,7 @@ app.post('/punks/update/:name', function(req, res) {
 var server = http.createServer(app)
   , io = require('socket.io').listen(server);
 
-server.listen(app.get('port'), function(){
+server.listen(app.get('port'), function() {
   console.log("Express server listening on port " + app.get('port'));
 });
 
@@ -113,22 +106,15 @@ io.sockets.on('connection', function (socket) {
   console.log('socket connection');
   socket.on('auth', function(data) {
     var socketKey = data.socketKey;
-    console.log('auth message');
     if (namesBySocketKey[socketKey]) {
       console.log('key is good');
       // This user is now authenticated for this socket
       socket.name = namesBySocketKey[socketKey];
+      console.log('AUTH MESSAGE for ' + namesBySocketKey[socketKey]);
       // All sockets associated with an authenticated user
       socketsByName[socket.name] = socket;
-      // Now we can accept other incoming messages
-      socket.on('chat', function(chat) {
-        // Save the chat in the db, then rebroadcast it to logged-in users.
-        chats.create(socket.name, chat.room, chat.what, function(err, chat) {
-          emitToAll('chat', chat);
-        });
-      });
     } else {
-      console.log('key is not good');
+      console.log('KEY IS NOT GOOD');
       // I don't know you buddy!
       socket.disconnect();
     }
@@ -141,8 +127,9 @@ io.sockets.on('connection', function (socket) {
 // send stuff to sockets that haven't authenticated yet. -Tom
 
 function emitToAll(message, data) {
-  _.each(socketsByName, function(socket) {
-      socket.emit(message, data);
+  _.each(socketsByName, function(socket, name) {
+    console.log('SENDING TO ' + name);
+    socket.emit(message, data);
   });
 }
 

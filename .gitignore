@@ -12,8 +12,9 @@ logs
 results
 
 npm-debug.log
-config/settings.js
 
 .DS_Store
 
 node_modules/
+
+start.sh

@@ -59,15 +59,6 @@
       <% }) %>
     </ul>
 
-    <textarea id="chat">
-    </textarea>
-    <ul id="chats">
-      <% chats.forEach(function(chat) { %>
-        <li class="chat" id="<%= chat._id %>">
-          <%= chat.who %>: <%= chat.what %>
-        </li>
-      <% }) %>
-    </ul>
   </body>
 </html>
 

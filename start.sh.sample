@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Edit this to suit *your* configuration, then use it to start the site.
+# Or, use Heroku config variables of the same name with Heroku.
+
+# This is your gmail domain you're using for authentication
+export DOMAIN=mygmaildomain.com
+
+# This is the hostname for the whereabouts site, so gmail can redirect back to it
+#export SITE=myhostname.com
+
+# Port # to listen on. DON'T set this for Stagecoach or Heroku,
+# they set that variable for you
+#export PORT=3000
+
+# DO set this to 80 for Stagecoach or Heroku
+# export PUBLIC_PORT=80
+
+# Teams. Must be consecutive
+#export TEAM_1=red:bob,joe,jane
+
+#export TEAM_2=blue:sarah,susan,rick
+
+# Start up node
+node app.js
