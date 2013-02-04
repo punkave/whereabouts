@@ -81,32 +81,11 @@ app.get('/punks/statuses', function(req, res) {
   res.send(settings.hardStatuses);
 });
 
-// gmail says who the valid punks are. Log in and 
-// you show up thereafter
-
-// app.get('/punks/generate', function(req, res) {
-//   console.log('attempting to generate');
-//   people.generate(function(err) {
-//      res.send('Hooray');
-//   });
-// });
-
 app.get('/punks/:name', function(req, res){
   people.findOne(req.params.name, function(err, punk) {
     res.send(punk);
   })
 });
-
-// Do these make sense? Google Auth decides who is a
-// valid user, not us. And we'd need to secure it. -Tom
-
-// app.get('/punks/add/:name', function(req, res){
-//   people.createPunk(req.params.name, res)
-// });
-
-// app.get('/punks/remove/:name', function(req, res){
-//   people.deletePunk(req.params.name, res)
-// });
 
 app.post('/punks/update/:name', function(req, res) {
   // Secure updates by username. TODO: api keys as an
@@ -185,7 +164,7 @@ function configurePassport()
       var user = { 
         email: profile.emails[0].value,
         name: name,
-        displayName: profile.displayName 
+        displayName: profile.displayName,
       };
       return done(null, user);
     }

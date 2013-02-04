@@ -15,7 +15,7 @@
   <body>
 
     <script type="text/template" class="_template" id="punkNormalView">
-      <div class="show">
+      <div class="show {{ hardStatus.replace(/\s+/g, '-').toLowerCase() }}">
         <h2 class="name">{{ name }} <span class="status">{{ hardStatus }}</span></h2>
         <br/>
         <div class="description">{{ softStatus }}</div>
@@ -42,13 +42,13 @@
 
     <ul class="punks">
       <% punks.forEach(function(p){ %>
-        <li class="punk <%= p.hardStatus %>" id="<%= p.name %>" data-name="<%= p.name %>">
+        <li class="punk" id="<%= p.name %>" data-name="<%= p.name %>">
           <div class="thumb <%= p.team %>">
             <img src="<%= p.imgUrl %>" />
           </div>
 
           <div class="info">
-            <div class="show">
+            <div class="show <%= p.hardStatus.replace(/\s+/g, '-').toLowerCase() %>">
               <h2 class="name"><%= p.name %> <span class="status"><%= p.hardStatus %></span></h2>
               <br/>
               
