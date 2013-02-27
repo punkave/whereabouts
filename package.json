@@ -1,9 +1,18 @@
 {
-  "name": "pkstatus",
-  "version": "0.0.1",
-  "private": true,
+  "name": "whereabouts",
+  "version": "0.0.0",
   "scripts": {
     "start": "node app"
+  },
+  "description": "Status app for co-workers",
+  "homepage": "https://github.com/punkave/whereabouts.git",
+  "engines": {
+    "node": "0.8.21",
+    "npm": "1.2.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/punkave/whereabouts.git"
   },
   "dependencies": {
     "express": "3.0.6",
