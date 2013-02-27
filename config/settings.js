@@ -6,23 +6,22 @@
 
 var settings = module.exports = {
   // HTTP port number for this whereabouts server
-  port: process.env.PORT ? process.env.PORT : 3000,
+  port: process.env.PORT || 3000,
   // HTTP hostname for this whereabouts server
-  site: process.env.SITE ? process.env.SITE : 'localhost',
+  site: process.env.SITE || 'localhost',
   // AUTHENTICATION DOMAIN - this is your gmail domain, not necessarily the
   // site name of this whereabouts server
-  domain: process.env.DOMAIN ? process.env.DOMAIN : 'example.com',
+  domain: process.env.DOMAIN || 'example.com',
   db: {
-    url: process.env.MONGODB_URI ? process.env.MONGODB_URI : 'whereabouts',
+    url: process.env.MONGODB_URI || 'whereabouts',
   },
-
   // Hard satuses should be a comma-separated list in HARD_STATUSES, otherwise our defaults  
   hardStatuses: process.env.HARD_STATUSES ? process.env.HARD_STATUSES.split(',') : ['Available', 'In a Meeting', 'Unavailable', 'At Lunch']
 };
 
 // For Heroku, Stagecoach and other reverse proxies, this should be 
 // overridden to 80 via PUBLIC_PORT
-settings.publicPort = process.env.PUBLIC_PORT ? process.env.PUBLIC_PORT : settings.port;
+settings.publicPort = process.env.PUBLIC_PORT || settings.port;
 
 // Teams should be in variables TEAM_1, TEAM_2, etc. and be comma-separated
 // lists of usernames 

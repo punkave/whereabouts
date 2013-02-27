@@ -206,11 +206,8 @@ function configurePassport()
       console.log('calling create');
       people.create(req.user.name, function(err, person) {
         console.log('callback of create');
-        if (!err) {
-          return after();
-        } else {
-          throw err;
-        }
+        if (err) throw err;
+        return after();
       });
       // Stash an identifier in the session that we will
       // accept later to associate this user with a socket.
